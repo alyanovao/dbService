@@ -2,6 +2,7 @@ package ru.aao.dbservice.dbservice.repository;
 
 import com.clickhouse.jdbc.ClickHouseDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,13 +11,16 @@ import java.sql.Statement;
 import java.util.Properties;
 
 @Slf4j
-public class CardRepository {
+public class CardRepositoryImpl implements CardRepository {
     String url = "jdbc:ch://localhost:8123";
 
     Properties properties = new Properties();
 
-    public void getRes() {
+    @Override
+    public String getResource() {
         ClickHouseDataSource dataSource = null;
+        Integer id = null;
+        String name = null;
         try {
             dataSource = new ClickHouseDataSource(url, properties);
         } catch (SQLException e) {
@@ -27,12 +31,13 @@ public class CardRepository {
                 Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery("select * from test");
                 while(rs.next()) {
-                    int id = rs.getInt("id");
-                    String name = rs.getString("name");
+                    id = rs.getInt("id");
+                    name = rs.getString("name");
                 }
         }
         catch (Exception e) {
             log.error(e.getMessage());
         }
+        return name + " :: id = " + id;
     }
 }
